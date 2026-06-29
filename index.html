@@ -8,241 +8,338 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --navy:#0F2337;--blue:#2E86C1;--ink:#1B4F72;
-  --border:#DCE4EE;--muted:#607080;--bg:#F4F7FB;
+  --navy:#0F2337;--navy2:#1B3A54;
+  --green:#1D6A3A;--blue:#1F5C99;
+  --accent:#2E86C1;
+  --bg:#F4F7FB;--surface:#fff;
+  --border:#DCE4EE;--muted:#607080;
+  --avail-bg:#EEF4FF;--avail-hover:#D8E8FF;
 }
-html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;background:var(--bg);color:#1A2B3C}
+html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:13px;background:var(--bg);color:#1A2B3C}
 
-/* ── TOP BAR ── */
+/* ══ TOP BAR ══════════════════════════════════════════════ */
 .topbar{
-  background:var(--navy);color:#fff;
-  display:flex;align-items:center;gap:14px;
+  background:var(--navy);
+  display:flex;align-items:center;gap:10px;
   padding:0 22px;height:54px;
-  position:sticky;top:0;z-index:200;
-  box-shadow:0 2px 8px rgba(0,0,0,.3);
+  position:sticky;top:0;z-index:300;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
 }
 .topbar-title{
-  font-size:18px;font-weight:700;letter-spacing:.3px;
-  margin-right:4px;
+  font-size:18px;font-weight:700;color:#fff;
+  letter-spacing:.2px;white-space:nowrap;
+  margin-right:6px;
 }
-.topbar-right{display:flex;align-items:center;gap:10px;margin-left:auto;position:relative}
+.spacer{flex:1}
 
-/* ── DATE CHIP (재고일보 스타일: 흰색 배경) ── */
+/* ── Date chip (white pill) ─────────────── */
 .date-picker{position:relative}
 .date-chip{
-  display:flex;align-items:center;gap:8px;
-  background:#fff;border-radius:6px;
-  padding:7px 16px;
-  font-size:14px;font-weight:600;color:#1A2B3C;
-  cursor:pointer;-webkit-user-select:none;user-select:none;
-  transition:background .12s;
-  font-variant-numeric:tabular-nums;
-  white-space:nowrap;
-}
-.date-chip:hover{background:#eef2f8}
-.date-chip svg{color:var(--navy);flex-shrink:0}
-.date-chip .arrow{font-size:10px;color:#888;margin-left:2px}
-
-/* ── DATE DROPDOWN ── */
-.date-dropdown{
-  display:none;position:absolute;top:calc(100% + 6px);right:0;
-  background:#fff;border:1px solid var(--border);border-radius:7px;
-  box-shadow:0 6px 20px rgba(0,0,0,.15);min-width:170px;z-index:999;
-  overflow:hidden;
-}
-.date-dropdown.open{display:block}
-.dd-item{
-  padding:9px 16px;font-size:13px;color:#1A2B3C;cursor:pointer;
-  transition:background .1s;white-space:nowrap;
-  font-variant-numeric:tabular-nums;
-}
-.dd-item:hover{background:#F0F4FA}
-.dd-item.active{background:var(--navy);color:#fff;font-weight:600}
-
-/* ── DOWNLOAD BUTTONS ── */
-.dl-btn{
   display:flex;align-items:center;gap:7px;
-  background:#1D6A3A;border:none;border-radius:6px;
-  padding:7px 15px;font-size:13px;font-weight:600;color:#fff;
-  cursor:pointer;text-decoration:none;transition:background .12s;
-  white-space:nowrap;
+  background:#fff;border-radius:6px;
+  padding:7px 14px;cursor:pointer;
+  font-size:14px;font-weight:600;color:var(--navy);
+  -webkit-user-select:none;user-select:none;
+  transition:background .12s;
+  white-space:nowrap;font-variant-numeric:tabular-nums;
 }
-.dl-btn:hover{background:#27AE60}
-.dl-btn.po{background:#1F5C99}
-.dl-btn.po:hover{background:#2874A6}
+.date-chip:hover{background:#eef2f9}
+.chip-arrow{font-size:9px;color:#8a9aaa;margin-left:1px;transition:transform .15s}
+.date-chip.open .chip-arrow{transform:rotate(180deg)}
 
-/* ── SUB HEADER ── */
+/* ── Calendar dropdown ───────────────────── */
+.cal-popup{
+  display:none;position:absolute;top:calc(100% + 8px);right:0;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.18);
+  width:268px;padding:14px;z-index:999;
+}
+.cal-popup.open{display:block}
+
+.cal-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:10px;
+}
+.cal-nav{
+  background:none;border:none;cursor:pointer;
+  font-size:13px;color:var(--muted);
+  padding:4px 9px;border-radius:4px;line-height:1;
+  transition:background .1s,color .1s;
+}
+.cal-nav:hover{background:#f0f4fa;color:var(--navy)}
+.cal-month-label{font-size:14px;font-weight:700;color:var(--navy)}
+
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-dow{
+  text-align:center;font-size:10px;font-weight:700;
+  color:var(--muted);padding:2px 0 6px;letter-spacing:.4px;
+}
+.cal-dow.sun{color:#c0392b}.cal-dow.sat{color:#2980b9}
+
+.cal-day{
+  text-align:center;padding:5px 2px;border-radius:5px;
+  font-size:12.5px;font-variant-numeric:tabular-nums;
+  line-height:1.6;
+}
+.cal-day.other{color:#ccd4dd}
+.cal-day.none{color:#c8d2de}
+.cal-day.avail{
+  background:var(--avail-bg);color:var(--navy);
+  font-weight:600;cursor:pointer;
+}
+.cal-day.avail:hover{background:var(--avail-hover)}
+.cal-day.avail.sel{
+  background:var(--navy);color:#fff;
+}
+.cal-day.avail.sun{color:#c0392b}.cal-day.avail.sun.sel{color:#fff}
+.cal-day.avail.sat{color:#2980b9}.cal-day.avail.sat.sel{color:#fff}
+
+/* ── Download buttons ───────────────────── */
+.dl-btn{
+  display:flex;align-items:center;gap:6px;
+  border:none;border-radius:6px;
+  padding:7px 14px;font-size:13px;font-weight:600;color:#fff;
+  cursor:pointer;text-decoration:none;white-space:nowrap;
+  transition:filter .12s;
+}
+.dl-btn:hover{filter:brightness(1.12)}
+.dl-btn.xl{background:var(--green)}
+.dl-btn.po{background:var(--blue)}
+
+/* ══ SUB HEADER ════════════════════════════════════════════ */
 .subhdr{
-  background:#fff;border-bottom:1px solid var(--border);
-  padding:9px 22px;
-  box-shadow:0 1px 3px rgba(0,0,0,.05);
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:9px 22px;box-shadow:0 1px 3px rgba(0,0,0,.05);
 }
-.subhdr-title{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:3px}
-.subhdr-meta{font-size:12px;color:var(--muted)}
+.subhdr-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.subhdr-meta{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 .subhdr-meta .sep{margin:0 7px;color:#c8d2de}
-.subhdr-meta a{color:var(--blue);text-decoration:none}
 
-/* ── CONTENT ── */
+/* ══ CONTENT ═══════════════════════════════════════════════ */
 .report-frame{
-  width:100%;border:none;display:block;
-  height:calc(100vh - 54px - 48px);
+  display:block;width:100%;border:none;
+  height:calc(100vh - 54px - 47px);
 }
-.empty-state{
+.empty{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  height:calc(100vh - 54px - 48px);color:var(--muted);gap:14px;
+  height:calc(100vh - 54px - 47px);gap:14px;color:var(--muted);
 }
-.empty-icon{font-size:44px;opacity:.2}
-.empty-state p{font-size:14px}
+.empty-icon{font-size:42px;opacity:.18}
+.hidden{display:none}
 </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
 <div class="topbar">
   <span class="topbar-title">수입상품 재고현황</span>
-  <div class="topbar-right">
+  <div class="spacer"></div>
 
-    <!-- 날짜 선택 -->
-    <div class="date-picker" id="date-picker">
-      <div class="date-chip" id="date-chip" onclick="toggleDropdown()">
-        <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-          <rect x="1" y="2" width="14" height="13" rx="2" stroke="#0F2337" stroke-width="1.6"/>
-          <path d="M5 1v3M11 1v3M1 6h14" stroke="#0F2337" stroke-width="1.6" stroke-linecap="round"/>
-        </svg>
-        <span id="hdr-date">—</span>
-        <span class="arrow">▾</span>
-      </div>
-      <div class="date-dropdown" id="date-dropdown"></div>
+  <!-- 날짜 달력 -->
+  <div class="date-picker" id="dp">
+    <div class="date-chip" id="chip" onclick="toggleCal()">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+        <rect x="1" y="2" width="14" height="13" rx="2" stroke="#0F2337" stroke-width="1.7"/>
+        <path d="M5 1v3M11 1v3M1 6h14" stroke="#0F2337" stroke-width="1.7" stroke-linecap="round"/>
+      </svg>
+      <span id="chip-text">—</span>
+      <span class="chip-arrow">▾</span>
     </div>
-
-    <!-- 재고현황 다운로드 -->
-    <a class="dl-btn" id="btn-xl" href="#" style="display:none">
-      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-        <rect x="1" y="1" width="14" height="14" rx="2" fill="#217346"/>
-        <path d="M4 4h3l1.5 3L10 4h2L9.5 8 12 12h-2L8.5 9 7 12H5l2.5-4L4 4z" fill="white"/>
-      </svg>
-      재고현황 다운로드
-    </a>
-
-    <!-- PO현황 다운로드 -->
-    <a class="dl-btn po" id="btn-po" href="#" style="display:none">
-      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-        <rect x="1" y="1" width="14" height="14" rx="2" fill="#1F5C99"/>
-        <path d="M4 4h3l1.5 3L10 4h2L9.5 8 12 12h-2L8.5 9 7 12H5l2.5-4L4 4z" fill="white"/>
-      </svg>
-      PO현황 다운로드
-    </a>
+    <div class="cal-popup" id="cal-popup">
+      <div class="cal-hdr">
+        <button type="button" class="cal-nav" onclick="navMonth(-1)">&#9664;</button>
+        <span class="cal-month-label" id="cal-label"></span>
+        <button type="button" class="cal-nav" onclick="navMonth(+1)">&#9654;</button>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
   </div>
+
+  <!-- 재고현황 다운로드 -->
+  <a class="dl-btn xl hidden" id="btn-xl" href="#">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+      <rect x="1" y="1" width="14" height="14" rx="2" fill="#217346"/>
+      <path d="M4 4h3l1.5 3L10 4h2L9.5 8 12 12h-2L8.5 9 7 12H5l2.5-4L4 4z" fill="#fff"/>
+    </svg>
+    재고현황 다운로드
+  </a>
+
+  <!-- PO현황 다운로드 -->
+  <a class="dl-btn po hidden" id="btn-po" href="#">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+      <rect x="1" y="1" width="14" height="14" rx="2" fill="#1F5C99"/>
+      <path d="M4 4h3l1.5 3L10 4h2L9.5 8 12 12h-2L8.5 9 7 12H5l2.5-4L4 4z" fill="#fff"/>
+    </svg>
+    PO현황 다운로드
+  </a>
 </div>
 
-<!-- SUB HEADER -->
 <div class="subhdr">
   <div class="subhdr-title">수입상품 재고현황</div>
   <div class="subhdr-meta" id="sub-meta">데이터를 불러오는 중...</div>
 </div>
 
-<!-- CONTENT -->
-<div class="empty-state" id="empty-state">
+<div class="empty" id="empty">
   <div class="empty-icon">📦</div>
   <p>등록된 리포트가 없습니다</p>
 </div>
-<iframe class="report-frame" id="report-frame" src="" style="display:none"></iframe>
+<iframe class="report-frame hidden" id="frame" src=""></iframe>
 
 <script>
 const BASE = location.pathname.replace(/\/?([^/]*)$/, '/');
+const DOW_KO = ['일','월','화','수','목','금','토'];
+const MON_KO = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 
-async function loadManifest() {
+let reports = [];           // manifest entries, newest first
+let byDate  = {};           // dateStr -> entry
+let current = null;         // currently selected entry
+let viewY   = 0;            // calendar view year
+let viewM   = 0;            // calendar view month (0-based)
+let calOpen = false;
+
+/* ── manifest ── */
+async function init() {
+  let manifest = {reports:[]};
   try {
     const r = await fetch(BASE + 'reports/manifest.json?t=' + Date.now());
-    return await r.json();
-  } catch(e) { return {reports:[]}; }
-}
-
-function fmtDate(d) {
-  if (!d) return '—';
-  return d.slice(0,4) + '년 ' + d.slice(4,6) + '월 ' + d.slice(6,8) + '일';
-}
-
-let ddOpen = false;
-function toggleDropdown() {
-  ddOpen = !ddOpen;
-  document.getElementById('date-dropdown').classList.toggle('open', ddOpen);
-}
-document.addEventListener('click', e => {
-  if (!document.getElementById('date-picker').contains(e.target)) {
-    ddOpen = false;
-    document.getElementById('date-dropdown').classList.remove('open');
-  }
-});
-
-function buildDropdown(reports) {
-  const dd = document.getElementById('date-dropdown');
-  dd.innerHTML = '';
-  reports.forEach(entry => {
-    const item = document.createElement('div');
-    item.className = 'dd-item';
-    item.dataset.date = entry.date;
-    item.textContent = entry.label || fmtDate(entry.date);
-    item.onclick = () => {
-      selectReport(entry);
-      ddOpen = false;
-      dd.classList.remove('open');
-    };
-    dd.appendChild(item);
-  });
-}
-
-function selectReport(entry) {
-  const frame   = document.getElementById('report-frame');
-  const empty   = document.getElementById('empty-state');
-  const hdrDate = document.getElementById('hdr-date');
-  const subMeta = document.getElementById('sub-meta');
-  const btnXl   = document.getElementById('btn-xl');
-  const btnPo   = document.getElementById('btn-po');
-
-  if (!entry) {
-    frame.style.display = 'none';
-    empty.style.display = 'flex';
-    hdrDate.textContent = '—';
-    subMeta.textContent = '리포트 없음';
-    btnXl.style.display = btnPo.style.display = 'none';
-    return;
-  }
-
-  frame.src = BASE + entry.html;
-  frame.style.display = 'block';
-  empty.style.display = 'none';
-
-  hdrDate.textContent = fmtDate(entry.date);
-
-  const xlsxName = entry.xlsx_file ? entry.xlsx_file.split('/').pop() : '—';
-  subMeta.innerHTML =
-    '기준일자: ' + fmtDate(entry.date) +
-    '<span class="sep">|</span>파일: ' + xlsxName;
-
-  btnXl.style.display = entry.xlsx_file ? 'flex' : 'none';
-  if (entry.xlsx_file) btnXl.href = BASE + entry.xlsx_file;
-
-  btnPo.style.display = entry.po_file ? 'flex' : 'none';
-  if (entry.po_file) btnPo.href = BASE + entry.po_file;
-
-  document.querySelectorAll('.dd-item').forEach(el =>
-    el.classList.toggle('active', el.dataset.date === entry.date)
-  );
-}
-
-async function init() {
-  const manifest = await loadManifest();
-  const reports  = manifest.reports || [];
+    manifest = await r.json();
+  } catch(e) {}
+  reports = manifest.reports || [];
+  byDate  = {};
+  reports.forEach(e => byDate[e.date] = e);
 
   if (!reports.length) {
     document.getElementById('sub-meta').textContent = '등록된 리포트가 없습니다';
     return;
   }
 
-  buildDropdown(reports);
-  selectReport(reports[0]);
+  // 가장 최근 날짜의 월로 달력 초기화
+  const latest = reports[0].date;
+  viewY = parseInt(latest.slice(0,4));
+  viewM = parseInt(latest.slice(4,6)) - 1;
+  renderCal();
+  selectEntry(reports[0]);
 }
+
+/* ── entry 선택 ── */
+function fmtD(d){ return d ? d.slice(0,4)+'년 '+d.slice(4,6)+'월 '+d.slice(6,8)+'일' : '—' }
+
+function selectEntry(e) {
+  current = e;
+  const frame = document.getElementById('frame');
+  const empty = document.getElementById('empty');
+
+  if (!e) {
+    frame.classList.add('hidden');
+    empty.classList.remove('hidden');
+    document.getElementById('chip-text').textContent = '—';
+    document.getElementById('sub-meta').textContent = '리포트 없음';
+    document.getElementById('btn-xl').classList.add('hidden');
+    document.getElementById('btn-po').classList.add('hidden');
+    return;
+  }
+
+  frame.src = BASE + e.html;
+  frame.classList.remove('hidden');
+  empty.classList.add('hidden');
+
+  document.getElementById('chip-text').textContent = fmtD(e.date);
+
+  const xlsxName = e.xlsx_file ? e.xlsx_file.split('/').pop() : '—';
+  document.getElementById('sub-meta').innerHTML =
+    '기준일자: ' + fmtD(e.date) +
+    '<span class="sep">|</span>파일: ' + xlsxName;
+
+  const btnXl = document.getElementById('btn-xl');
+  btnXl.classList.toggle('hidden', !e.xlsx_file);
+  if (e.xlsx_file) btnXl.href = BASE + e.xlsx_file;
+
+  const btnPo = document.getElementById('btn-po');
+  btnPo.classList.toggle('hidden', !e.po_file);
+  if (e.po_file) btnPo.href = BASE + e.po_file;
+
+  renderCal(); // 선택 상태 반영
+}
+
+/* ── calendar ── */
+function renderCal() {
+  document.getElementById('cal-label').textContent = viewY + '년 ' + MON_KO[viewM];
+
+  const firstDow = new Date(viewY, viewM, 1).getDay();       // 0=일
+  const daysInM  = new Date(viewY, viewM + 1, 0).getDate();
+  const daysInP  = new Date(viewY, viewM, 0).getDate();
+  const totalCells = Math.ceil((firstDow + daysInM) / 7) * 7;
+
+  const grid = document.getElementById('cal-grid');
+  let html = '';
+
+  // 요일 헤더
+  DOW_KO.forEach((d, i) => {
+    const cls = i===0 ? 'sun' : i===6 ? 'sat' : '';
+    html += `<div class="cal-dow ${cls}">${d}</div>`;
+  });
+
+  // 이전달 날짜
+  for (let i = 0; i < firstDow; i++) {
+    html += `<div class="cal-day other">${daysInP - firstDow + 1 + i}</div>`;
+  }
+
+  // 이번달 날짜
+  for (let d = 1; d <= daysInM; d++) {
+    const ds = `${viewY}${String(viewM+1).padStart(2,'0')}${String(d).padStart(2,'0')}`;
+    const dow = (firstDow + d - 1) % 7;
+    const isSun = dow === 0, isSat = dow === 6;
+    const has = !!byDate[ds];
+    const sel = current && current.date === ds;
+    const cls = [
+      'cal-day',
+      has ? 'avail' : 'none',
+      sel ? 'sel'   : '',
+      isSun ? 'sun' : '',
+      isSat ? 'sat' : '',
+    ].filter(Boolean).join(' ');
+    const click = has ? `onclick="pickDate('${ds}')"` : '';
+    html += `<div class="${cls}" ${click}>${d}</div>`;
+  }
+
+  // 다음달 채우기
+  let nd = 1;
+  for (let i = firstDow + daysInM; i < totalCells; i++) {
+    html += `<div class="cal-day other">${nd++}</div>`;
+  }
+
+  grid.innerHTML = html;
+}
+
+function navMonth(delta) {
+  viewM += delta;
+  if (viewM < 0)  { viewM = 11; viewY--; }
+  if (viewM > 11) { viewM = 0;  viewY++; }
+  renderCal();
+}
+
+function pickDate(ds) {
+  selectEntry(byDate[ds]);
+  closeCal();
+}
+
+/* ── dropdown open/close ── */
+function toggleCal() {
+  calOpen ? closeCal() : openCal();
+}
+function openCal() {
+  calOpen = true;
+  document.getElementById('cal-popup').classList.add('open');
+  document.getElementById('chip').classList.add('open');
+}
+function closeCal() {
+  calOpen = false;
+  document.getElementById('cal-popup').classList.remove('open');
+  document.getElementById('chip').classList.remove('open');
+}
+
+document.addEventListener('click', e => {
+  if (calOpen && !document.getElementById('dp').contains(e.target)) closeCal();
+});
 
 init();
 </script>
