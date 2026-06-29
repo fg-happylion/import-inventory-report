@@ -1,4 +1,12 @@
 {
-  "reports": [],
-  "updated": ""
+  "reports": [
+    {
+      "date": "20260629",
+      "html": "reports/2606/report_20260629.html",
+      "label": "2026.06.29",
+      "xlsx_file": "reports/2606/iloom_Import Inventory_20260629.xlsx",
+      "po_file": "reports/Import PO Status.xlsx"
+    }
+  ],
+  "updated": "20260629"
 }
