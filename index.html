@@ -22,22 +22,44 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;font-size:13px
   box-shadow:0 2px 6px rgba(0,0,0,.25);
 }
 .topbar-title{font-size:17px;font-weight:700;letter-spacing:.3px}
-.topbar-right{display:flex;align-items:center;gap:8px}
+.topbar-right{display:flex;align-items:center;gap:8px;position:relative}
 
+/* ── DATE PICKER ── */
+.date-picker{position:relative}
 .date-chip{
   display:flex;align-items:center;gap:6px;
   background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);
   border-radius:5px;padding:5px 13px;font-size:13px;font-weight:500;
+  cursor:pointer;-webkit-user-select:none;user-select:none;transition:background .12s;
   font-variant-numeric:tabular-nums;
 }
-.date-chip svg{opacity:.7}
+.date-chip:hover{background:rgba(255,255,255,.2)}
+.date-chip svg{opacity:.7;flex-shrink:0}
+.date-chip .arrow{font-size:10px;opacity:.6;margin-left:2px}
 
+.date-dropdown{
+  display:none;position:absolute;top:calc(100% + 6px);right:0;
+  background:#fff;border:1px solid var(--border);border-radius:6px;
+  box-shadow:0 4px 16px rgba(0,0,0,.15);min-width:160px;z-index:999;
+  overflow:hidden;
+}
+.date-dropdown.open{display:block}
+.dd-item{
+  padding:8px 14px;font-size:12.5px;color:#1A2B3C;cursor:pointer;
+  transition:background .1s;white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.dd-item:hover{background:#F0F4FA}
+.dd-item.active{background:#0F2337;color:#fff;font-weight:600}
+
+/* ── DOWNLOAD BUTTONS ── */
 .dl-btn{
   display:flex;align-items:center;gap:6px;
   background:#1D6A3A;border:1px solid rgba(46,204,113,.6);
   border-radius:5px;padding:6px 14px;
   font-size:12.5px;font-weight:600;color:#fff;
   cursor:pointer;text-decoration:none;transition:background .12s;
+  white-space:nowrap;
 }
 .dl-btn:hover{background:#27AE60}
 .dl-btn.po{background:#1F5C99;border-color:rgba(93,173,226,.6)}
@@ -52,39 +74,14 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;font-size:13px
 .subhdr-meta{font-size:12px;color:var(--muted)}
 .subhdr-meta .sep{margin:0 6px;color:#c0c8d4}
 
-/* ── DATE BAR ── */
-.date-bar{
-  background:#fff;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:6px;
-  padding:7px 20px;overflow-x:auto;scrollbar-width:none;
-}
-.date-bar::-webkit-scrollbar{display:none}
-.date-label{
-  font-size:10.5px;font-weight:700;letter-spacing:1.2px;
-  text-transform:uppercase;color:var(--muted);flex-shrink:0;
-  padding-right:4px;border-right:1px solid var(--border);margin-right:2px;
-}
-.date-btn{
-  flex-shrink:0;padding:4px 11px;border-radius:3px;
-  border:1px solid var(--border);background:#f8fafc;
-  font-size:12px;cursor:pointer;color:var(--muted);
-  transition:all .12s;white-space:nowrap;
-}
-.date-btn:hover{border-color:var(--blue);color:var(--ink)}
-.date-btn.active{
-  background:var(--navy);color:#fff;
-  border-color:var(--navy);font-weight:600;
-}
-
 /* ── CONTENT ── */
 .report-frame{
   width:100%;border:none;display:block;
-  height:calc(100vh - 52px - 46px - 38px);
+  height:calc(100vh - 52px - 46px);
 }
 .empty-state{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  height:calc(100vh - 52px - 46px - 38px);
-  color:var(--muted);gap:12px;
+  height:calc(100vh - 52px - 46px);color:var(--muted);gap:12px;
 }
 .empty-state .icon{font-size:44px;opacity:.25}
 .empty-state p{font-size:14px}
@@ -96,22 +93,29 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;font-size:13px
 <div class="topbar">
   <span class="topbar-title">수입상품 재고현황</span>
   <div class="topbar-right">
-    <div class="date-chip">
-      <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-        <rect x="1" y="2" width="14" height="13" rx="2" stroke="white" stroke-width="1.5"/>
-        <path d="M5 1v3M11 1v3M1 6h14" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <span id="hdr-date">—</span>
+
+    <!-- 날짜 드롭다운 -->
+    <div class="date-picker" id="date-picker">
+      <div class="date-chip" id="date-chip" onclick="toggleDropdown()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="2" width="14" height="13" rx="2" stroke="white" stroke-width="1.5"/>
+          <path d="M5 1v3M11 1v3M1 6h14" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span id="hdr-date">—</span>
+        <span class="arrow">▾</span>
+      </div>
+      <div class="date-dropdown" id="date-dropdown"></div>
     </div>
+
     <a class="dl-btn" id="btn-xl" href="#" style="display:none">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
         <rect x="1" y="1" width="14" height="14" rx="2" fill="#217346"/>
         <path d="M4 4h3l1.5 3L10 4h2L9.5 8 12 12h-2L8.5 9 7 12H5l2.5-4L4 4z" fill="white"/>
       </svg>
       재고현황 다운로드
     </a>
     <a class="dl-btn po" id="btn-po" href="#" style="display:none">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
         <rect x="1" y="1" width="14" height="14" rx="2" fill="#1F5C99"/>
         <path d="M4 4h3l1.5 3L10 4h2L9.5 8 12 12h-2L8.5 9 7 12H5l2.5-4L4 4z" fill="white"/>
       </svg>
@@ -126,11 +130,6 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;font-size:13px
   <div class="subhdr-meta" id="sub-meta">데이터를 불러오는 중...</div>
 </div>
 
-<!-- DATE BAR -->
-<div class="date-bar" id="date-bar">
-  <span class="date-label">날짜 선택</span>
-</div>
-
 <!-- CONTENT -->
 <div class="empty-state" id="empty-state">
   <div class="icon">📦</div>
@@ -140,6 +139,8 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;font-size:13px
 
 <script>
 const BASE = location.pathname.replace(/\/?([^/]*)$/, '/');
+let allReports = [];
+let dropdownOpen = false;
 
 async function loadManifest() {
   try {
@@ -151,6 +152,35 @@ async function loadManifest() {
 function fmtDate(d) {
   if (!d) return '—';
   return d.slice(0,4) + '년 ' + d.slice(4,6) + '월 ' + d.slice(6,8) + '일';
+}
+
+function toggleDropdown() {
+  dropdownOpen = !dropdownOpen;
+  document.getElementById('date-dropdown').classList.toggle('open', dropdownOpen);
+}
+
+document.addEventListener('click', e => {
+  if (!document.getElementById('date-picker').contains(e.target)) {
+    dropdownOpen = false;
+    document.getElementById('date-dropdown').classList.remove('open');
+  }
+});
+
+function buildDropdown(reports) {
+  const dd = document.getElementById('date-dropdown');
+  dd.innerHTML = '';
+  reports.forEach(entry => {
+    const item = document.createElement('div');
+    item.className = 'dd-item';
+    item.dataset.date = entry.date;
+    item.textContent = entry.label || fmtDate(entry.date);
+    item.onclick = () => {
+      selectReport(entry);
+      dropdownOpen = false;
+      dd.classList.remove('open');
+    };
+    dd.appendChild(item);
+  });
 }
 
 function selectReport(entry) {
@@ -176,52 +206,34 @@ function selectReport(entry) {
 
   hdrDate.textContent = fmtDate(entry.date);
 
-  const xlsxName = entry.xlsx_file
-    ? entry.xlsx_file.split('/').pop()
-    : '';
+  const xlsxName = entry.xlsx_file ? entry.xlsx_file.split('/').pop() : '—';
   subMeta.innerHTML =
     '기준일자: ' + fmtDate(entry.date) +
-    '<span class="sep">|</span>파일: ' + (xlsxName || '—');
+    '<span class="sep">|</span>파일: ' + xlsxName;
 
-  if (entry.xlsx_file) {
-    btnXl.href = BASE + entry.xlsx_file;
-    btnXl.style.display = 'flex';
-  } else {
-    btnXl.style.display = 'none';
-  }
+  btnXl.style.display = entry.xlsx_file ? 'flex' : 'none';
+  if (entry.xlsx_file) btnXl.href = BASE + entry.xlsx_file;
 
-  if (entry.po_file) {
-    btnPo.href = BASE + entry.po_file;
-    btnPo.style.display = 'flex';
-  } else {
-    btnPo.style.display = 'none';
-  }
+  btnPo.style.display = entry.po_file ? 'flex' : 'none';
+  if (entry.po_file) btnPo.href = BASE + entry.po_file;
 
-  document.querySelectorAll('.date-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.date === entry.date);
+  // 드롭다운 active 표시
+  document.querySelectorAll('.dd-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.date === entry.date);
   });
 }
 
 async function init() {
   const manifest = await loadManifest();
-  const reports  = manifest.reports || [];
-  const bar      = document.getElementById('date-bar');
+  allReports = manifest.reports || [];
 
-  if (!reports.length) {
+  if (!allReports.length) {
     document.getElementById('sub-meta').textContent = '등록된 리포트가 없습니다';
     return;
   }
 
-  reports.forEach(entry => {
-    const btn = document.createElement('span');
-    btn.className   = 'date-btn';
-    btn.dataset.date = entry.date;
-    btn.textContent = entry.label || fmtDate(entry.date);
-    btn.onclick = () => selectReport(entry);
-    bar.appendChild(btn);
-  });
-
-  selectReport(reports[0]);
+  buildDropdown(allReports);
+  selectReport(allReports[0]);
 }
 
 init();
