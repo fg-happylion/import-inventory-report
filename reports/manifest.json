@@ -1,6 +1,13 @@
 {
   "reports": [
     {
+      "date": "20260630",
+      "html": "reports/2606/report_20260630.html",
+      "label": "2026.06.30",
+      "xlsx_file": "reports/2606/iloom_Import Inventory_20260630.xlsx",
+      "po_file": "reports/Import PO Status.xlsx"
+    },
+    {
       "date": "20260629",
       "html": "reports/2606/report_20260629.html",
       "label": "2026.06.29",
@@ -8,5 +15,5 @@
       "po_file": "reports/Import PO Status.xlsx"
     }
   ],
-  "updated": "20260629"
+  "updated": "20260630"
 }
