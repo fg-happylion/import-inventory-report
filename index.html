@@ -9,86 +9,100 @@
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --navy:#0F2337;--ink:#1B4F72;--blue:#2E86C1;
-  --bg:#F4F7FB;--surface:#fff;--border:#DCE4EE;
-  --text:#1A2B3C;--muted:#607080;
-  --red:#C0392B;--green:#1E8449;
+  --bg:#F4F7FB;--border:#DCE4EE;--muted:#607080;
 }
-html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;background:var(--bg);color:var(--text)}
+html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;background:var(--bg);color:#1A2B3C}
 
-/* TOP BAR */
+/* ── TOP BAR ── */
 .topbar{
   background:var(--navy);color:#fff;
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;height:50px;
-  position:sticky;top:0;z-index:100;
+  padding:0 20px;height:52px;
+  position:sticky;top:0;z-index:200;
+  box-shadow:0 2px 6px rgba(0,0,0,.25);
 }
-.topbar-title{font-size:16px;font-weight:700}
+.topbar-title{font-size:17px;font-weight:700;letter-spacing:.3px}
 .topbar-right{display:flex;align-items:center;gap:8px}
+
 .date-chip{
-  display:flex;align-items:center;gap:7px;
-  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);
-  border-radius:4px;padding:5px 14px;
-  font-size:13px;font-weight:500;
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);
+  border-radius:5px;padding:5px 13px;font-size:13px;font-weight:500;
+  font-variant-numeric:tabular-nums;
 }
+.date-chip svg{opacity:.7}
+
 .dl-btn{
   display:flex;align-items:center;gap:6px;
-  background:#1D6A3A;border:1px solid #2ECC71;border-radius:4px;
-  padding:6px 13px;font-size:12.5px;font-weight:600;color:#fff;
+  background:#1D6A3A;border:1px solid rgba(46,204,113,.6);
+  border-radius:5px;padding:6px 14px;
+  font-size:12.5px;font-weight:600;color:#fff;
   cursor:pointer;text-decoration:none;transition:background .12s;
 }
 .dl-btn:hover{background:#27AE60}
-.dl-btn.po{background:#1F5C99;border-color:#5DADE2}
+.dl-btn.po{background:#1F5C99;border-color:rgba(93,173,226,.6)}
 .dl-btn.po:hover{background:#2874A6}
-.dl-btn.hidden{display:none}
 
-/* SUB-HEADER */
+/* ── SUB HEADER ── */
 .subhdr{
   background:#fff;border-bottom:1px solid var(--border);
-  padding:9px 20px;box-shadow:0 1px 3px rgba(0,0,0,.06);
+  padding:9px 20px;box-shadow:0 1px 3px rgba(0,0,0,.05);
 }
-.subhdr-title{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:2px}
+.subhdr-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:2px}
 .subhdr-meta{font-size:12px;color:var(--muted)}
-.subhdr-meta span{margin:0 7px;color:#c0c8d4}
+.subhdr-meta .sep{margin:0 6px;color:#c0c8d4}
 
-/* DATE SELECTOR */
+/* ── DATE BAR ── */
 .date-bar{
   background:#fff;border-bottom:1px solid var(--border);
   display:flex;align-items:center;gap:6px;
-  padding:8px 20px;overflow-x:auto;scrollbar-width:none;
+  padding:7px 20px;overflow-x:auto;scrollbar-width:none;
 }
 .date-bar::-webkit-scrollbar{display:none}
+.date-label{
+  font-size:10.5px;font-weight:700;letter-spacing:1.2px;
+  text-transform:uppercase;color:var(--muted);flex-shrink:0;
+  padding-right:4px;border-right:1px solid var(--border);margin-right:2px;
+}
 .date-btn{
-  flex-shrink:0;padding:5px 12px;border-radius:3px;
+  flex-shrink:0;padding:4px 11px;border-radius:3px;
   border:1px solid var(--border);background:#f8fafc;
   font-size:12px;cursor:pointer;color:var(--muted);
   transition:all .12s;white-space:nowrap;
 }
 .date-btn:hover{border-color:var(--blue);color:var(--ink)}
-.date-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:600}
-.date-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);flex-shrink:0}
-
-/* IFRAME */
-.report-frame{
-  width:100%;border:none;
-  height:calc(100vh - 155px);
-  display:block;
+.date-btn.active{
+  background:var(--navy);color:#fff;
+  border-color:var(--navy);font-weight:600;
 }
 
-/* EMPTY STATE */
+/* ── CONTENT ── */
+.report-frame{
+  width:100%;border:none;display:block;
+  height:calc(100vh - 52px - 46px - 38px);
+}
 .empty-state{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  height:calc(100vh - 155px);color:var(--muted);gap:12px;
+  height:calc(100vh - 52px - 46px - 38px);
+  color:var(--muted);gap:12px;
 }
-.empty-state .icon{font-size:48px;opacity:.3}
+.empty-state .icon{font-size:44px;opacity:.25}
 .empty-state p{font-size:14px}
 </style>
 </head>
 <body>
 
+<!-- TOP BAR -->
 <div class="topbar">
   <span class="topbar-title">수입상품 재고현황</span>
   <div class="topbar-right">
-    <div class="date-chip" id="hdr-date">—</div>
+    <div class="date-chip">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+        <rect x="1" y="2" width="14" height="13" rx="2" stroke="white" stroke-width="1.5"/>
+        <path d="M5 1v3M11 1v3M1 6h14" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <span id="hdr-date">—</span>
+    </div>
     <a class="dl-btn" id="btn-xl" href="#" style="display:none">
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
         <rect x="1" y="1" width="14" height="14" rx="2" fill="#217346"/>
@@ -106,56 +120,53 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;font-size:13px
   </div>
 </div>
 
+<!-- SUB HEADER -->
 <div class="subhdr">
   <div class="subhdr-title">수입상품 재고현황</div>
   <div class="subhdr-meta" id="sub-meta">데이터를 불러오는 중...</div>
 </div>
 
+<!-- DATE BAR -->
 <div class="date-bar" id="date-bar">
   <span class="date-label">날짜 선택</span>
 </div>
 
-<div id="main-area">
-  <div class="empty-state" id="empty-state">
-    <div class="icon">📦</div>
-    <p>리포트가 없습니다</p>
-  </div>
-  <iframe class="report-frame" id="report-frame" src="" style="display:none"></iframe>
+<!-- CONTENT -->
+<div class="empty-state" id="empty-state">
+  <div class="icon">📦</div>
+  <p>등록된 리포트가 없습니다</p>
 </div>
+<iframe class="report-frame" id="report-frame" src="" style="display:none"></iframe>
 
 <script>
-const BASE = location.pathname.replace(/\/?$/, '/');
-let currentEntry = null;
+const BASE = location.pathname.replace(/\/?([^/]*)$/, '/');
 
 async function loadManifest() {
   try {
     const r = await fetch(BASE + 'reports/manifest.json?t=' + Date.now());
     return await r.json();
-  } catch(e) {
-    return { reports: [] };
-  }
+  } catch(e) { return {reports:[]}; }
 }
 
 function fmtDate(d) {
-  return d ? d.slice(0,4)+'년 '+d.slice(4,6)+'월 '+d.slice(6,8)+'일' : '—';
+  if (!d) return '—';
+  return d.slice(0,4) + '년 ' + d.slice(4,6) + '월 ' + d.slice(6,8) + '일';
 }
 
 function selectReport(entry) {
-  currentEntry = entry;
-  const frame = document.getElementById('report-frame');
-  const empty = document.getElementById('empty-state');
+  const frame   = document.getElementById('report-frame');
+  const empty   = document.getElementById('empty-state');
   const hdrDate = document.getElementById('hdr-date');
   const subMeta = document.getElementById('sub-meta');
-  const btnXl = document.getElementById('btn-xl');
-  const btnPo = document.getElementById('btn-po');
+  const btnXl   = document.getElementById('btn-xl');
+  const btnPo   = document.getElementById('btn-po');
 
   if (!entry) {
     frame.style.display = 'none';
     empty.style.display = 'flex';
     hdrDate.textContent = '—';
     subMeta.textContent = '리포트 없음';
-    btnXl.style.display = 'none';
-    btnPo.style.display = 'none';
+    btnXl.style.display = btnPo.style.display = 'none';
     return;
   }
 
@@ -164,10 +175,14 @@ function selectReport(entry) {
   empty.style.display = 'none';
 
   hdrDate.textContent = fmtDate(entry.date);
-  subMeta.innerHTML = '기준일자: ' + fmtDate(entry.date)
-    + '<span>|</span>파일: report_' + entry.date + '.html';
 
-  // 재고현황 xlsx
+  const xlsxName = entry.xlsx_file
+    ? entry.xlsx_file.split('/').pop()
+    : '';
+  subMeta.innerHTML =
+    '기준일자: ' + fmtDate(entry.date) +
+    '<span class="sep">|</span>파일: ' + (xlsxName || '—');
+
   if (entry.xlsx_file) {
     btnXl.href = BASE + entry.xlsx_file;
     btnXl.style.display = 'flex';
@@ -175,7 +190,6 @@ function selectReport(entry) {
     btnXl.style.display = 'none';
   }
 
-  // PO현황
   if (entry.po_file) {
     btnPo.href = BASE + entry.po_file;
     btnPo.style.display = 'flex';
@@ -190,17 +204,17 @@ function selectReport(entry) {
 
 async function init() {
   const manifest = await loadManifest();
-  const reports = manifest.reports || [];
-  const bar = document.getElementById('date-bar');
+  const reports  = manifest.reports || [];
+  const bar      = document.getElementById('date-bar');
 
-  if (reports.length === 0) {
+  if (!reports.length) {
     document.getElementById('sub-meta').textContent = '등록된 리포트가 없습니다';
     return;
   }
 
   reports.forEach(entry => {
     const btn = document.createElement('span');
-    btn.className = 'date-btn';
+    btn.className   = 'date-btn';
     btn.dataset.date = entry.date;
     btn.textContent = entry.label || fmtDate(entry.date);
     btn.onclick = () => selectReport(entry);
