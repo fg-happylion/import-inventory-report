@@ -167,10 +167,13 @@ function selectReport(entry) {
   subMeta.innerHTML = '기준일자: ' + fmtDate(entry.date)
     + '<span>|</span>파일: report_' + entry.date + '.html';
 
-  // 재고현황 xlsx (html과 같은 폴더, .xlsx 확장자)
-  const xlsxUrl = BASE + 'reports/iloom_Import Inventory_' + entry.date + '.xlsx';
-  btnXl.href = xlsxUrl;
-  btnXl.style.display = 'flex';
+  // 재고현황 xlsx
+  if (entry.xlsx_file) {
+    btnXl.href = BASE + entry.xlsx_file;
+    btnXl.style.display = 'flex';
+  } else {
+    btnXl.style.display = 'none';
+  }
 
   // PO현황
   if (entry.po_file) {
