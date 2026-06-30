@@ -237,7 +237,7 @@ function selectEntry(e) {
     return;
   }
 
-  frame.src = BASE + e.html;
+  frame.src = BASE + e.html + '?t=' + e.date;
   frame.classList.remove('hidden');
   empty.classList.add('hidden');
 
@@ -250,11 +250,17 @@ function selectEntry(e) {
 
   const btnXl = document.getElementById('btn-xl');
   btnXl.classList.toggle('hidden', !e.xlsx_file);
-  if (e.xlsx_file) btnXl.href = BASE + e.xlsx_file;
+  if (e.xlsx_file) {
+    btnXl.href = BASE + e.xlsx_file;
+    btnXl.download = e.xlsx_file.split('/').pop();
+  }
 
   const btnPo = document.getElementById('btn-po');
   btnPo.classList.toggle('hidden', !e.po_file);
-  if (e.po_file) btnPo.href = BASE + e.po_file;
+  if (e.po_file) {
+    btnPo.href = BASE + e.po_file;
+    btnPo.download = e.po_file.split('/').pop();
+  }
 
   renderCal(); // 선택 상태 반영
 }
