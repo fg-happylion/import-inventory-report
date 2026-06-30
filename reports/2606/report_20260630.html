@@ -21,8 +21,9 @@ html,body{font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;background:
 .sc-label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
 .sc-val{font-size:17px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums}
 .sc-val.red{color:var(--red)}.sc-val.green{color:var(--green)}.sc-val.amber{color:var(--amber)}
-.tw{overflow-x:auto;border:1px solid var(--border);background:#fff}
+.tw{overflow:auto;height:calc(100vh - 260px);min-height:300px;border:1px solid var(--border);background:#fff}
 table{width:100%;border-collapse:collapse;font-size:12px}
+thead{position:sticky;top:0;z-index:200}
 thead tr{background:var(--navy)}
 th{position:relative;padding:7px 9px;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:rgba(255,255,255,.85);white-space:nowrap}
 th.r{text-align:right}
